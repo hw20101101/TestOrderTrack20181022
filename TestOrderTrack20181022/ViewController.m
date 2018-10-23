@@ -26,7 +26,7 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) UIView *orderStatusBgView;
 @property (strong, nonatomic) UIView *shadeView;
-@property (assign, nonatomic) ScrollDirection *scrollDirection;
+@property (assign, nonatomic) ScrollDirection scrollDirection;
 
 //上一次滚动的数据
 @property (assign, nonatomic) float lastContentOffset;
@@ -115,53 +115,26 @@ typedef enum : NSUInteger {
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//    NSLog(@"-->> scrollView.contentOffset:%@", NSStringFromCGPoint(scrollView.contentOffset));
-}
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-
-    NSLog(@"-->> scrollViewDidEndDragging 3 - decelerate:%d - y:%f",decelerate, scrollView.contentOffset.y);
-//    if (decelerate) {//滚动减速
-//        return;
-//    }
-
-    if (self.lastContentOffset < scrollView.contentOffset.y) {//向上滚动
-        NSLog(@"-->> 向上滚动");
+    //只处理上下滚动，未处理上下拖动
+    if (velocity.y > 0) {//up
+         
         //show tableHeaderView
         [UIView animateWithDuration:0.5 animations:^{
             self.orderStatusBgView.alpha = 1;
             self.shadeView.alpha = 1;
-            scrollView.contentOffset = CGPointMake(0, 360);
+            self.tableView.contentOffset = CGPointMake(0, 200);
         }];
 
-    }else{//向下滚动
-
-        NSLog(@"-->> 向下滚动");
+    } else if (velocity.y < 0){//down
         //hide tableHeaderView
         [UIView animateWithDuration:0.5 animations:^{
             self.orderStatusBgView.alpha = 0;
             self.shadeView.alpha = 0;
-            scrollView.contentOffset = CGPointMake(0, 0);
+            self.tableView.contentOffset = CGPointMake(0, 0);
         }];
     }
 }
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-    self.lastContentOffset = scrollView.contentOffset.y;
-    NSLog(@"-->> scrollViewWillBeginDragging 1 - y:%f", scrollView.contentOffset.y);
-}
-
-//- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-//    NSLog(@"-->> scrollViewWillEndDragging 2 - y:%f - velocity:%f - targetContentOffset:%f", scrollView.contentOffset.y, velocity.y, targetContentOffset->y);
-//}
-//
-//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView{
-//    NSLog(@"-->> scrollViewWillBeginDecelerating 4");
-//}
-//
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-//    NSLog(@"-->> scrollViewDidEndDecelerating 5");
-//}
 
 @end
