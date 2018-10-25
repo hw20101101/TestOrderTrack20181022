@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C7361B502181BE79000B36E3 /* CustomTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7361B4E2181BE79000B36E3 /* CustomTableView.m */; };
 		C7388D10217DAB76008F7AF5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7388D0F217DAB76008F7AF5 /* AppDelegate.m */; };
 		C7388D13217DAB76008F7AF5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7388D12217DAB76008F7AF5 /* ViewController.m */; };
 		C7388D16217DAB76008F7AF5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7388D14217DAB76008F7AF5 /* Main.storyboard */; };
@@ -20,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C7361B4E2181BE79000B36E3 /* CustomTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableView.m; sourceTree = "<group>"; };
+		C7361B4F2181BE79000B36E3 /* CustomTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableView.h; sourceTree = "<group>"; };
 		C7388D0B217DAB76008F7AF5 /* TestOrderTrack20181022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestOrderTrack20181022.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7388D0E217DAB76008F7AF5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C7388D0F217DAB76008F7AF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -72,6 +75,8 @@
 				C7388D0F217DAB76008F7AF5 /* AppDelegate.m */,
 				C7388D11217DAB76008F7AF5 /* ViewController.h */,
 				C7388D12217DAB76008F7AF5 /* ViewController.m */,
+				C7361B4F2181BE79000B36E3 /* CustomTableView.h */,
+				C7361B4E2181BE79000B36E3 /* CustomTableView.m */,
 				C7388D31217DD86E008F7AF5 /* NormalCell.h */,
 				C7388D32217DD86E008F7AF5 /* NormalCell.m */,
 				C7388D33217DD86E008F7AF5 /* NormalCell.xib */,
@@ -161,6 +166,7 @@
 			files = (
 				C7388D13217DAB76008F7AF5 /* ViewController.m in Sources */,
 				C7388D34217DD86E008F7AF5 /* NormalCell.m in Sources */,
+				C7361B502181BE79000B36E3 /* CustomTableView.m in Sources */,
 				C7388D2F217DD852008F7AF5 /* FirstCell.m in Sources */,
 				C7388D1E217DAB82008F7AF5 /* main.m in Sources */,
 				C7388D10217DAB76008F7AF5 /* AppDelegate.m in Sources */,

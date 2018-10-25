@@ -10,23 +10,36 @@
 #import <MapKit/MapKit.h>
 #import "FirstCell.h"
 #import "NormalCell.h"
-
-typedef enum : NSUInteger {
-    UP,
-    DOWN,
-} ScrollDirection;//滚动方向
+#import "CustomTableView.h"
 
 @interface ViewController ()<UITableViewDelegate, UITableViewDataSource>
 
-@property (strong, nonatomic) UIScrollView *scrollView;
 @property (assign, nonatomic) CGFloat screenWidth;
 @property (assign, nonatomic) CGFloat screenHeight;
 
-@property (strong, nonatomic) UITableView *tableView;
-@property (strong, nonatomic) MKMapView *mapView;
+
+/**
+ 订单状态背景视图
+ */
 @property (strong, nonatomic) UIView *orderStatusBgView;
+
+
+/**
+ 遮罩视图
+ */
 @property (strong, nonatomic) UIView *shadeView;
-@property (assign, nonatomic) ScrollDirection scrollDirection;
+
+
+/**
+ 苹果地图
+ */
+@property (strong, nonatomic) MKMapView *mapView;
+
+
+/**
+ 自定义 tableView，实现事件隔层传递
+ */
+@property (strong, nonatomic) CustomTableView *tableView;
 
 //上一次滚动的数据
 @property (assign, nonatomic) float lastContentOffset;
@@ -40,13 +53,12 @@ typedef enum : NSUInteger {
     self.view.backgroundColor = [UIColor redColor];
     self.screenWidth = self.view.frame.size.width;
     self.screenHeight = self.view.frame.size.height;
-
     [self initSubView];
 }
 
 - (void)initSubView{
 
-    //地图
+    //苹果地图
     self.mapView = [[MKMapView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.mapView];
 
@@ -56,39 +68,46 @@ typedef enum : NSUInteger {
     self.shadeView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.shadeView];
 
+    CGFloat tableViewX = 15;
+    CGFloat tableViewY = 32;
+
     //tableView
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(15, 22, self.screenWidth - 15 * 2, self.screenHeight - 22)];
+    self.tableView = [[CustomTableView alloc] initWithFrame:CGRectMake(tableViewX, tableViewY, self.screenWidth - tableViewX * 2, self.screenHeight - tableViewY)];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.showsVerticalScrollIndicator = NO;
-    [self.view addSubview:self.tableView];
-
+    //禁止 tableView 滚动反弹
+    self.tableView.bounces = NO;
+    //使 tableView 滚动时的减速时间大大减少
+    self.tableView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.tableView registerNib:[UINib nibWithNibName:@"FirstCell" bundle:nil] forCellReuseIdentifier:@"FirstCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"NormalCell" bundle:nil] forCellReuseIdentifier:@"NormalCell"];
+    [self.view addSubview:self.tableView];
 
     //利用透明视图占位，显示下层的地图
-    UILabel *tableHeaderView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.screenWidth - 15 * 2, 450)];
+    UILabel *tableHeaderView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.screenWidth, 450)];
     tableHeaderView.alpha = 0;
     self.tableView.tableHeaderView = tableHeaderView;
+    self.tableView.passthroughViews = @[self.mapView, self.shadeView];
 
     //订单状态背景视图
-    self.orderStatusBgView = [[UILabel alloc] initWithFrame:CGRectMake(0, 22, self.screenWidth, 90)];
+    self.orderStatusBgView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.screenWidth, 120)];
     self.orderStatusBgView.alpha = 0;
-    self.orderStatusBgView.backgroundColor = [UIColor whiteColor];
+    self.orderStatusBgView.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:self.orderStatusBgView];
 
-    UIButton *orderStatusBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 45, 150, 40)];
+    UIButton *orderStatusBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 80, 150, 40)];
     [orderStatusBtn setTitle:@"等待支付 >" forState:UIControlStateNormal];
     [orderStatusBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.orderStatusBgView addSubview:orderStatusBtn];
 
     //返回按钮
-    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, 22, 40, 40)];
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(tableViewX, tableViewY, 40, 40)];
     [backBtn setTitle:@"<" forState:UIControlStateNormal];
     [backBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [backBtn setBackgroundColor:[UIColor lightGrayColor]];
+    [backBtn setBackgroundColor:[UIColor darkGrayColor]];
     [self.view addSubview:backBtn];
 }
 
@@ -119,20 +138,25 @@ typedef enum : NSUInteger {
 
     //只处理上下滚动，未处理上下拖动
     if (velocity.y > 0) {//up
-         
+
+        if (scrollView.contentOffset.y >= 360) {
+            return;
+        }
+
         //show tableHeaderView
         [UIView animateWithDuration:0.5 animations:^{
             self.orderStatusBgView.alpha = 1;
             self.shadeView.alpha = 1;
-            self.tableView.contentOffset = CGPointMake(0, 200);
+            targetContentOffset->y = 360;
         }];
 
     } else if (velocity.y < 0){//down
+
         //hide tableHeaderView
         [UIView animateWithDuration:0.5 animations:^{
             self.orderStatusBgView.alpha = 0;
             self.shadeView.alpha = 0;
-            self.tableView.contentOffset = CGPointMake(0, 0);
+            targetContentOffset->y = 0;
         }];
     }
 }
