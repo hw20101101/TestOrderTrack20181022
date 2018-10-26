@@ -41,8 +41,11 @@
  */
 @property (strong, nonatomic) CustomTableView *tableView;
 
-//上一次滚动的数据
-@property (assign, nonatomic) float lastContentOffset;
+
+/**
+ tableView 上一次滚动的位置
+ */
+@property (assign, nonatomic) float lastContentOffsetY;
 
 @end
 
@@ -136,29 +139,32 @@
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
 
-    //只处理上下滚动，未处理上下拖动
-    if (velocity.y > 0) {//up
+    if (targetContentOffset->y > self.lastContentOffsetY) {//向上滚动
 
-        if (scrollView.contentOffset.y >= 360) {
-            return;
+        if (targetContentOffset->y >= 360) {
+            [self updateViewAlpha:1];//显示视图
+
+        } else {
+            [UIView animateWithDuration:0.5 animations:^{
+                [self updateViewAlpha:1];//显示视图
+                targetContentOffset->y = 360;
+            }];
         }
 
-        //show tableHeaderView
-        [UIView animateWithDuration:0.5 animations:^{
-            self.orderStatusBgView.alpha = 1;
-            self.shadeView.alpha = 1;
-            targetContentOffset->y = 360;
-        }];
+    } else {//向下滚动
 
-    } else if (velocity.y < 0){//down
-
-        //hide tableHeaderView
         [UIView animateWithDuration:0.5 animations:^{
-            self.orderStatusBgView.alpha = 0;
-            self.shadeView.alpha = 0;
+            [self updateViewAlpha:0];//隐藏视图
             targetContentOffset->y = 0;
         }];
     }
+
+    self.lastContentOffsetY = targetContentOffset->y;
+}
+
+- (void)updateViewAlpha:(int)alpha{
+    self.orderStatusBgView.alpha = alpha;
+    self.shadeView.alpha = alpha;
 }
 
 @end
