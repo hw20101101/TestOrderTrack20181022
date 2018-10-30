@@ -139,7 +139,7 @@
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
 
-    if (targetContentOffset->y > self.lastContentOffsetY) {//向上滚动
+    if (targetContentOffset->y >= self.lastContentOffsetY && targetContentOffset->y != 0) {//向上滚动
 
         if (targetContentOffset->y >= 360) {
             [self updateViewAlpha:1];//显示视图
