@@ -6,9 +6,9 @@
 //  Copyright © 2018 aiitec. All rights reserved.
 //
 
-#import "FirstCell.h"
+#import "TopCell.h"
 
-@implementation FirstCell
+@implementation TopCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];

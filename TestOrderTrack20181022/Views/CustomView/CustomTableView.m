@@ -8,15 +8,7 @@
 
 #import "CustomTableView.h"
 
-@interface CustomTableView()
-
--(BOOL) isPassthroughView: (UIView*) view;
-
-@end
-
-@implementation CustomTableView{
-    BOOL testHits;
-}
+@implementation CustomTableView
 
 @synthesize passthroughViews=_passthroughViews;
 

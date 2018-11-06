@@ -6,13 +6,14 @@
 //  Copyright © 2018 aiitec. All rights reserved.
 //
 
-#import "ViewController.h"
 #import <MapKit/MapKit.h>
-#import "FirstCell.h"
+
+#import "MapViewController.h"
+#import "TopCell.h"
 #import "NormalCell.h"
 #import "CustomTableView.h"
 
-@interface ViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface MapViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (assign, nonatomic) CGFloat screenWidth;
 @property (assign, nonatomic) CGFloat screenHeight;
@@ -49,7 +50,17 @@
 
 @end
 
-@implementation ViewController
+@implementation MapViewController
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden = NO;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -61,6 +72,9 @@
 
 - (void)initSubView{
 
+    CGFloat tableViewX = 15;
+    CGFloat tableViewY = 32;
+    
     //苹果地图
     self.mapView = [[MKMapView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.mapView];
@@ -70,9 +84,6 @@
     self.shadeView.alpha = 0;
     self.shadeView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.shadeView];
-
-    CGFloat tableViewX = 15;
-    CGFloat tableViewY = 32;
 
     //tableView
     self.tableView = [[CustomTableView alloc] initWithFrame:CGRectMake(tableViewX, tableViewY, self.screenWidth - tableViewX * 2, self.screenHeight - tableViewY)];
@@ -85,7 +96,7 @@
     self.tableView.bounces = NO;
     //使 tableView 滚动时的减速时间大大减少
     self.tableView.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self.tableView registerNib:[UINib nibWithNibName:@"FirstCell" bundle:nil] forCellReuseIdentifier:@"FirstCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"TopCell" bundle:nil] forCellReuseIdentifier:@"TopCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"NormalCell" bundle:nil] forCellReuseIdentifier:@"NormalCell"];
     [self.view addSubview:self.tableView];
 
@@ -111,6 +122,7 @@
     [backBtn setTitle:@"<" forState:UIControlStateNormal];
     [backBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [backBtn setBackgroundColor:[UIColor darkGrayColor]];
+    [backBtn addTarget:self action:@selector(backBtnAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:backBtn];
 }
 
@@ -129,7 +141,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     if (indexPath.row == 0) {
-        FirstCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstCell"];
+        TopCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TopCell"];
         return cell;
     } else {
         NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell"];
@@ -165,6 +177,10 @@
 - (void)updateViewAlpha:(int)alpha{
     self.orderStatusBgView.alpha = alpha;
     self.shadeView.alpha = alpha;
+}
+
+- (void)backBtnAction{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

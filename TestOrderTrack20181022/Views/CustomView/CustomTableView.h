@@ -10,9 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CustomTableView : UITableView
+@interface CustomTableView : UITableView{
+    BOOL testHits;
+}
 
 @property (nonatomic, copy) NSArray *passthroughViews;
+
+-(BOOL) isPassthroughView: (UIView*) view;
 
 @end
 
